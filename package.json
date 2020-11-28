@@ -1,0 +1,21 @@
+{
+  "name": "video-tutorials",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "camelcase-keys": "^6.2.2",
+    "db-migrate": "^0.11.11",
+    "db-migrate-pg": "^1.2.2",
+    "express": "^4.17.1",
+    "postgres": "^1.0.2",
+    "uuid": "^8.3.1"
+  },
+  "scripts": {
+    "start-dev-server": "nodemon src/bin/start-server.js --color",
+    "db-migrate": "node_modules/db-migrate/bin/db-migrate"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

@@ -1,0 +1,25 @@
+# node.js setup with db-migrate modules.
+
+sql-%:
+	@yarn db-migrate create $*
+
+migrate:
+	@yarn db-migrate up
+
+rollback:
+	@yarn db-migrate down
+
+reset:
+	@yarn db-migrate reset
+
+seed-%:
+	@yarn db-migrate create:seed $*
+
+migrate-seed:
+	@yarn db-migrate up:seed
+
+rollback-seed:
+	@yarn db-migrate down:seed
+
+reset-seed:
+	@yarn db-migrate reset:seed

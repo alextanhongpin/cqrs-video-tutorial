@@ -1,0 +1,41 @@
+{
+  "seed": {
+    "table": "seed"
+  },
+  "development": {
+    "driver": "pg",
+    "user": {
+      "ENV": "DB_USER"
+    },
+    "password": {
+      "ENV": "DB_PASS"
+    },
+    "host": {
+      "ENV": "DB_HOST"
+    },
+    "database": {
+      "ENV": "DB_NAME"
+    },
+    "port": {
+      "ENV": "DB_PORT"
+    }
+  },
+  "test": {
+    "driver": "pg",
+    "user": {
+      "ENV": "TEST_DB_USER"
+    },
+    "password": {
+      "ENV": "TEST_DB_PASS"
+    },
+    "host": {
+      "ENV": "TEST_DB_HOST"
+    },
+    "database": {
+      "ENV": "TEST_DB_NAME"
+    },
+    "port": {
+      "ENV": "TEST_DB_PORT"
+    }
+  }
+}
