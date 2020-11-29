@@ -21,11 +21,11 @@ function createHandlers({ queries }) {
 function createQueries({ db }) {
   async function loadHomePage() {
     const [row] = await db`
-      SELECT *
+      SELECT page_data
       FROM page
       WHERE page_name = 'home'
     `;
-    return camelCaseKeys(row);
+    return camelCaseKeys(row.page_data);
   }
   return { loadHomePage };
 }
