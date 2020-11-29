@@ -13,8 +13,8 @@ function createWrite({ db }) {
         ${message.id},
         ${streamName},
         ${message.type},
-        ${message.data},
-        ${message.metadata},
+        ${db.json(message.data)},
+        ${db.json(message.metadata)},
         ${expectedVersion}
       )
     `;

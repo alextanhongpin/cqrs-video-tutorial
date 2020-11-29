@@ -6,7 +6,7 @@ function createHandlers({ queries }) {
   async function home(req, res, next) {
     try {
       const viewData = await queries.loadHomePage();
-      return res.render("home/templates/home", viewData);
+      return res.render("app/home/templates/home", viewData);
     } catch (error) {
       next(error);
     }
