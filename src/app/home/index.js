@@ -20,11 +20,12 @@ function createHandlers({ queries }) {
 // Services.
 function createQueries({ db }) {
   async function loadHomePage() {
-    const [{ total }] = await db`
-      SELECT sum(view_count) AS total
-      FROM video
+    const [row] = await db`
+      SELECT *
+      FROM page
+      WHERE page_name = 'home'
     `;
-    return total;
+    return camelCaseKeys(row);
   }
   return { loadHomePage };
 }
