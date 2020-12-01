@@ -4,6 +4,7 @@ const createHomeApp = require("./home");
 const createRecordViewingsApp = require("./record-viewings");
 const createMessageStore = require("../message-store");
 const createHomePageAggregator = require("../aggregators/home-page");
+const createRegisterUsersApp = require("./register-users");
 
 async function createConfig({ env }) {
   const db = await connect();
@@ -24,6 +25,7 @@ async function createConfig({ env }) {
     messageStore
   });
   const recordViewingsApp = createRecordViewingsApp({ messageStore });
+  const registerUsersApp = createRegisterUsersApp({ db, messageStore });
 
   const aggregators = [homePageAggregator];
   const components = [];
@@ -34,7 +36,8 @@ async function createConfig({ env }) {
     recordViewingsApp,
     messageStore,
     aggregators,
-    components
+    components,
+    registerUsersApp
   };
 }
 
