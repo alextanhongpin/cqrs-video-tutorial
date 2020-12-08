@@ -15,7 +15,8 @@ function createMessageStore({ db }) {
     write,
     createSubscription,
     read: read.read,
-    readLastMessage: read.readLastMessage
+    readLastMessage: read.readLastMessage,
+    fetch: read.fetch
   };
 }
 

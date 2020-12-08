@@ -54,8 +54,13 @@ function configureCreateSubscription({ read, readLastMessage, write }) {
           throw error;
         }
       });
-      await Promise.all(promises);
-      return messages.length;
+      try {
+        const result = await Promise.all(promises);
+        return result.length;
+      } catch (error) {
+        console.log("processBatchError", error);
+        throw error;
+      }
     }
 
     function handleMessage(message) {
@@ -75,7 +80,9 @@ function configureCreateSubscription({ read, readLastMessage, write }) {
 
     async function delay(duration = 1000) {
       return new Promise(resolve =>
-        window.timeout(resolve, duration, duration)
+        setTimeout(() => {
+          resolve();
+        }, duration)
       );
     }
 
@@ -93,7 +100,8 @@ function configureCreateSubscription({ read, readLastMessage, write }) {
     async function tick() {
       try {
         const messages = await getNextBatchOfMessages();
-        await processBatch(messages);
+        const messageProcessed = await processBatch(messages);
+        return messageProcessed;
       } catch (error) {
         console.error("Error processing batch", error);
         stop();

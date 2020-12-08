@@ -13,7 +13,7 @@ function createRead({ db }) {
     if (streamName.includes("-")) {
       const rows = await db`
         SELECT *
-        FROM message_store.get_stream_messages(${streamName}, ${fromPosition}, ${maxMessages})
+        FROM message_store.get_stream_messages(${streamName}::varchar, ${fromPosition}::bigint, ${maxMessages}::bigint)
       `;
       return rows.map(deserializeMessage);
     }
@@ -24,9 +24,26 @@ function createRead({ db }) {
     return rows.map(deserializeMessage);
   }
 
+  function project(events, projection) {
+    return events.reduce((entity, event) => {
+      if (!projection[event.type]) {
+        return entity;
+      }
+
+      return projection[event.type](entity, event);
+    }, projection.$init());
+  }
+
+  async function fetch(streamName, projection) {
+    const messages = await read(streamName);
+    const output = project(messages, projection);
+    return output;
+  }
+
   return {
     read,
-    readLastMessage
+    readLastMessage,
+    fetch
   };
 }
 

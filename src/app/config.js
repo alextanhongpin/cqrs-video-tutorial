@@ -1,10 +1,19 @@
 const { connect, config } = require("./database");
 const migrate = require("./migrate");
+
+// Apps.
 const createHomeApp = require("./home");
 const createRecordViewingsApp = require("./record-viewings");
 const createMessageStore = require("../message-store");
-const createHomePageAggregator = require("../aggregators/home-page");
 const createRegisterUsersApp = require("./register-users");
+const createAuthenticateApp = require("./authenticate");
+
+// Components.
+const createIdentityComponent = require("../components/identity");
+
+// Aggregators.
+const createHomePageAggregator = require("../aggregators/home-page");
+const createUserCredentialsAggregator = require("../aggregators/user-credentials");
 
 async function createConfig({ env }) {
   const db = await connect();
@@ -19,25 +28,47 @@ async function createConfig({ env }) {
   });
 
   const messageStore = createMessageStore({ db: messageStoreDb });
+
+  // Apps.
   const homeApp = createHomeApp({ db });
+  const recordViewingsApp = createRecordViewingsApp({ messageStore });
+  const registerUsersApp = createRegisterUsersApp({ db, messageStore });
+  const authenticateApp = createAuthenticateApp({ db, messageStore });
+
+  // Aggregators.
   const homePageAggregator = createHomePageAggregator({
     db,
     messageStore
   });
-  const recordViewingsApp = createRecordViewingsApp({ messageStore });
-  const registerUsersApp = createRegisterUsersApp({ db, messageStore });
+  const userCredentialsAggregator = createUserCredentialsAggregator({
+    db,
+    messageStore
+  });
 
-  const aggregators = [homePageAggregator];
-  const components = [];
+  // Components.
+  const identityComponent = createIdentityComponent({ messageStore });
+
+  const aggregators = [homePageAggregator, userCredentialsAggregator];
+  const components = [identityComponent];
 
   return {
     env,
-    homeApp,
-    recordViewingsApp,
-    messageStore,
     aggregators,
     components,
-    registerUsersApp
+    messageStore,
+
+    // Apps.
+    homeApp,
+    recordViewingsApp,
+    registerUsersApp,
+    authenticateApp,
+
+    // Aggregators.
+    homePageAggregator,
+    userCredentialsAggregator,
+
+    // Components.
+    identityComponent
   };
 }
 
