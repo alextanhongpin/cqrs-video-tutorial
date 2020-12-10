@@ -9,12 +9,23 @@ function configureCreateSubscription({ read, readLastMessage, write }) {
     messagesPerTick = 100,
     subscriberId,
     positionUpdateInterval = 100,
+    originStreamName = null,
     tickIntervalMs = 100
   }) => {
     const subscriberStreamName = `subscriberPosition-${subscriberId}`;
     let currentPosition = 0;
     let messagesSinceLastPositionWrite = 0;
     let keepGoing = true;
+
+    function filterOnOriginMatch(messages) {
+      if (!originStreamName) return messages;
+
+      return messages.filter(message => {
+        const originCategory =
+          message.metadata && category(message.metadata.originStreamName);
+        return originStreamName === originCategory;
+      });
+    }
 
     async function loadPosition() {
       const message = await readLastMessage(subscriberStreamName);
@@ -41,7 +52,9 @@ function configureCreateSubscription({ read, readLastMessage, write }) {
     }
 
     function getNextBatchOfMessages() {
-      return read(streamName, currentPosition + 1, messagesPerTick);
+      return read(streamName, currentPosition + 1, messagesPerTick).then(
+        filterOnOriginMatch
+      );
     }
 
     async function processBatch(messages) {
