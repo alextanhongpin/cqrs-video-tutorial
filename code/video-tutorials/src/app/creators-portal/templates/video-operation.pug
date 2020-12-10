@@ -1,0 +1,27 @@
+extends ../../common-templates/layout
+
+block content
+  - const pending = !operation
+  
+  if pending
+    .row
+      .col-12
+        h1 Operation pending
+
+        p Your operation is pending... one moment please
+
+    script.
+      setTimeout(() => window.location.reload(), 1000)
+  
+  else
+    .row
+      .col-12
+        - videoUrl = `/creators-portal/videos/${operation.videoId}`
+
+        h1 Operation failed
+
+        p.alert.alert-danger= operation.failureReason
+
+        p
+          a(href=videoUrl) Back to the video
+        

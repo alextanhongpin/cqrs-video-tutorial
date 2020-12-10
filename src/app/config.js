@@ -7,9 +7,11 @@ const createRecordViewingsApp = require("./record-viewings");
 const createMessageStore = require("../message-store");
 const createRegisterUsersApp = require("./register-users");
 const createAuthenticateApp = require("./authenticate");
+const createPickupTransport = require("nodemailer-pickup-transport");
 
 // Components.
 const createIdentityComponent = require("../components/identity");
+const createSendEmailComponent = require("../components/send-email");
 
 // Aggregators.
 const createHomePageAggregator = require("../aggregators/home-page");
@@ -28,6 +30,12 @@ async function createConfig({ env }) {
   });
 
   const messageStore = createMessageStore({ db: messageStoreDb });
+  const transport = createPickupTransport({ directory: env.emailDirectory });
+  const sendEmailComponent = createSendEmailComponent({
+    messageStore,
+    systemSenderEmailAddress: env.systemSenderEmailAddress,
+    transport
+  });
 
   // Apps.
   const homeApp = createHomeApp({ db });
@@ -49,7 +57,7 @@ async function createConfig({ env }) {
   const identityComponent = createIdentityComponent({ messageStore });
 
   const aggregators = [homePageAggregator, userCredentialsAggregator];
-  const components = [identityComponent];
+  const components = [identityComponent, sendEmailComponent];
 
   return {
     env,
@@ -68,7 +76,8 @@ async function createConfig({ env }) {
     userCredentialsAggregator,
 
     // Components.
-    identityComponent
+    identityComponent,
+    sendEmailComponent
   };
 }
 

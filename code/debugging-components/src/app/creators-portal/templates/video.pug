@@ -1,0 +1,34 @@
+extends ../../common-templates/layout
+
+block content
+  - const videoName = video.name == null ? 'Untitled Video' : video.name
+  - const videoCode = video.transcodedUri.split('=')[1]
+  - const nameError = errors && errors.name && errors.name.join(', ')
+
+  .row
+    .col-12
+      h1 Creators Portal
+
+  .row
+    .col-sm-8
+      .row.mb-5
+        .col-12
+          h2 Video Name
+          form(method="POST", action=`/creators-portal/videos/${video.id}/name`)
+            .form-group
+              if nameError
+                p.alert.alert-danger= nameError
+              input.form-control(type='text', placeholder='Untitled', name='name', value=video.name)
+            button(type="submit") Name video
+      .row
+        .col-12
+          h2 Video Description
+          form(method="POST", action=`/creators-portal/videos/${video.id}/describe`)
+            .form-group
+              textarea.form-control(placeholder='No description', name='description', value=video.description, rows="10")
+            button(type="submit") Describe video
+
+    .col-sm-4
+      .row
+        .col-12
+          iframe(width='100%', src=`https://www.youtube.com/embed/${videoCode}`, frameborder='0', allow='autoplay; encrypted-media', allowfullscreen='')

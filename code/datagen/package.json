@@ -1,0 +1,20 @@
+{
+  "name": "datagen",
+  "version": "1.0.0",
+  "description": "Generates events to load into the Message Store that will be used by the debugging chapter.",
+  "main": "generate.js",
+  "scripts": {
+    "generate": "node generate.js && cp commands.json ../video-tutorials/example-messages/commands.json && cp commands.json ../debugging-components/example-messages/commands.json",
+    "test": "echo \"No tests. YOLO!\""
+  },
+  "keywords": [
+    "datagen"
+  ],
+  "author": "Ethan Garofolo <ethan@suchsoftware.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "faker": "^4.1.0",
+    "uuid": "^3.3.2"
+  }
+}

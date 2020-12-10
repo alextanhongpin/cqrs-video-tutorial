@@ -1,0 +1,18 @@
+extends ./admin-layout
+
+block content
+  h1 Component Read Positions
+
+  if positions.length === 0
+    p Nothing has reported in.  Generate more messages.  Register some more users or watch more videos.
+  else
+    table.table.table-hover
+      thead
+        tr
+          th(scope="col") Subscriber Id
+          th(scope="col") Global Position
+      tbody
+        each position in positions
+          tr
+            td= position.id
+            td= position.position

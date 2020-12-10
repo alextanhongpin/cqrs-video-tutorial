@@ -1,0 +1,33 @@
+extends ./admin-layout
+
+block content
+  h1 #{ title ? title : 'Messages' }
+
+  if messages.length === 0
+    p There are no messages.
+  else
+    table.table.table-hover
+      thead
+        tr
+          th(scope="col") id
+          th(scope="col") globalPosition
+          th(scope="col") traceId
+          th(scope="col") userId
+          th(scope="col") stream name
+          th(scope="col") type
+          th(scope="col") time
+      tbody
+        each message in messages
+          tr
+            td
+              a(href=`/admin/messages/${message.id}`)= message.id
+            td= message.globalPosition
+            td
+              a(href=`/admin/correlated-messages/${message.metadata && message.metadata.traceId}`)= message.metadata && message.metadata.traceId
+            td
+              a(href=`/admin/user-messages/${message.metadata && message.metadata.userId}`)= message.metadata && message.metadata.userId
+            td
+              a(href=`/admin/streams/${message.streamName}`)= message.streamName
+            td
+              a(href=`/admin/type-messages/${message.type}`)= message.type
+            td= message.time

@@ -1,0 +1,22 @@
+extends ./admin-layout
+
+block content
+  h1 All Streams
+
+  if streams.length === 0
+    p There are no streams.
+  else 
+    table.table.table-hover
+      thead
+        tr
+          th(scope="col") Stream Name
+          th(scope="col") Message Count
+          th(scope="col") Last Message Global Position
+      tbody
+        each stream in streams
+          tr
+            td
+              a(href=`/admin/streams/${stream.streamName}`)= stream.streamName
+            td= stream.messageCount
+            td
+              a(href=`/admin/messages/${stream.lastMessageId}`)= stream.lastMessageGlobalPosition

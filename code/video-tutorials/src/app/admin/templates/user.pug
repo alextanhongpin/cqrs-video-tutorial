@@ -1,0 +1,29 @@
+extends ./admin-layout
+
+block content
+  h1 User - #{user.email}
+
+  div
+    h2 Viewing Activity
+
+    if viewingEvents.length === 0
+      p.card-text No login activity
+    else
+      table.table
+        tbody
+          for viewingEvent in viewingEvents
+            tr
+              td= viewingEvent.data.videoId
+              td= viewingEvent.time
+  
+  div
+    h2 Login Activity
+    if loginEvents.length === 0
+      p.card-text No login activity
+    else
+      table.table
+        tbody
+          for loginEvent in loginEvents
+            tr
+              td= loginEvent.type
+              td= loginEvent.time

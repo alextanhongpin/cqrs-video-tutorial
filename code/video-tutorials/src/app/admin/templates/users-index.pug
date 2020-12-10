@@ -1,0 +1,23 @@
+extends ./admin-layout
+
+block content
+  h1 Users
+
+  if users.length === 0
+    p There are no users.  Go get you some!
+  else
+    table.table.table-hover
+      thead
+        tr
+          th(scope="col") id
+          th(scope="col") email
+          th(scope="col") login count
+          th(scope="col") registration email sent
+      tbody
+        each user in users
+          tr
+            td(scope="col")
+              a(href=`/admin/users/${user.id}`)= user.id
+            td(scope="col")= user.email
+            td(scope="col")= user.loginCount
+            td(scope="col")= user.registrationEmailSent ? 'yes' : 'no'

@@ -1,0 +1,12 @@
+extends ../../common-templates/layout
+
+block content
+  h1 Log in
+  form(action="/auth/log-in" method="POST")
+    .form-group
+      label(for="email") Email
+      input#email.form-control(type="email" name="email" placeholder="email" required)
+    .form-group
+      label(for="password") Password
+      input#password.form-control(type="password" name="password" placeholder="password" required)
+    button(type="submit") Log in!

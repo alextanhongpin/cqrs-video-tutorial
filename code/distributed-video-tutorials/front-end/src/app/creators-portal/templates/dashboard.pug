@@ -1,0 +1,93 @@
+extends ../../common-templates/layout
+
+block content
+  h1 Creators Portal
+  .row
+    .col-sm
+      h2 Your Videos
+
+      if videos.length === 0
+        p.alert.alert-info You don't have any videos.  Upload one!
+      else
+        table.table.table-striped
+          thead
+            tr
+              td Name
+              td Description
+              td Views
+          tbody
+            each video in videos
+              tr
+                td
+                  a(href=`/creators-portal/videos/${video.id}`)
+                    if !video.name
+                      em Untitled
+                    else
+                      = video.name
+                td
+                  if !video.description
+                    em No description
+                  else
+                    = video.description
+                td= video.views || 0
+
+
+    .col-lg-4
+      h2 Upload a video
+      form#video-form(action="/videos" method="POST")
+        input#video-id(type='hidden' value=newVideoId name="videoId")
+        .form-group
+          label(for='video-file') Choose video file
+          input.form-control-file#video-file(type='file')
+        button.btn.btn-success(type="submit") Upload!
+      img#loader(src="/img/ajax-loader.gif" style="display: none")
+
+  
+
+block behavior
+  script(src='/js/axios.min.js')
+
+  script.
+    function hideForm() {
+      $('#video-form').hide()
+      $('#loader').show()
+    }
+
+    function fakeUpload() {
+      // Use a timeout to fake uploading to S3
+      return new Promise(resolve => {
+        setTimeout(
+          () => { 
+            resolve()
+          },
+          2000
+        )
+      })
+    }
+
+    function reloadPage() {
+      window.location.reload()
+    }
+
+    function handleVideoUploaded() {
+      const videoId = $('#video-id').val()
+      const fakeVideoData = {
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        videoId
+      }
+
+      axios.post('/creators-portal/publish-video', fakeVideoData)
+        .then(reloadPage)
+    }
+
+    $('#video-form').submit(e => {
+      e.preventDefault()
+
+      Promise.resolve(true)
+        .then(hideForm)
+        .then(fakeUpload)
+        .then(handleVideoUploaded)
+        .catch(err => {
+          console.log({ err })
+        })
+    })

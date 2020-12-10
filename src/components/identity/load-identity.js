@@ -3,13 +3,19 @@ const identityProjection = {
     return {
       id: null,
       email: null,
-      isRegistered: false
+      isRegistered: false,
+      registrationEmailSent: false
     };
   },
   Registered(identity, registered) {
     identity.id = registered.data.userId;
     identity.email = registered.data.email;
     identity.isRegistered = true;
+
+    return identity;
+  },
+  RegistrationEmailSent(identity) {
+    identity.registrationEmailSent = true;
 
     return identity;
   }
