@@ -24,7 +24,7 @@ function createQueries({ db }) {
 }
 
 function createActions({ messageStore, queries }) {
-  async function loadExistinEntity(attributes) {
+  async function loadExistingEntity(attributes) {
     const existingIdentity = await queries.byEmail(attributes.email);
     return existingIdentity;
   }
@@ -49,7 +49,7 @@ function createActions({ messageStore, queries }) {
     };
 
     validate(context);
-    const existingIdentity = await loadExistinEntity(attributes);
+    const existingIdentity = await loadExistingEntity(attributes);
     ensureThereWasNoExistingIdentity(existingIdentity);
     const passwordHash = await hashPassword(attributes);
     const output = await writeRegisterCommand(hashed);
