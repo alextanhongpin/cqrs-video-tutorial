@@ -1,11 +1,11 @@
 const express = require("express");
 const camelCaseKeys = require("camelcase-keys");
-const loadExistingIdentity = require("./load-existing-entity");
 const writeRegisterCommand = require("./write-register-command");
-const hashPassword = require("./hash-password");
-const ensureThereWasNoExistingIdentity = require("./ensure-there-was-no-existing-identity");
 const validate = require("./validate");
 const uuid = require("uuid");
+const ValidationError = require("../errors/validation-error");
+const bcrypt = require("bcrypt");
+const SALT_ROUNDS = 10;
 
 function createQueries({ db }) {
   async function byEmail(email) {
@@ -24,6 +24,22 @@ function createQueries({ db }) {
 }
 
 function createActions({ messageStore, queries }) {
+  async function loadExistinEntity(attributes) {
+    const existingIdentity = await queries.byEmail(attributes.email);
+    return existingIdentity;
+  }
+
+  function ensureThereWasNoExistingIdentity(existingIdentity) {
+    if (existingIdentity) {
+      throw new ValidationError({ email: ["already taken"] });
+    }
+  }
+
+  async function hashPassword({ password }) {
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+    return passwordHash;
+  }
+
   async function registerUser(traceId, attributes) {
     const context = {
       attributes,
@@ -33,9 +49,9 @@ function createActions({ messageStore, queries }) {
     };
 
     validate(context);
-    const identity = await loadExistingIdentity(context);
-    await ensureThereWasNoExistingIdentity(identity);
-    const hashed = await hashPassword(identity);
+    const existingIdentity = await loadExistinEntity(attributes);
+    ensureThereWasNoExistingIdentity(existingIdentity);
+    const passwordHash = await hashPassword(attributes);
     const output = await writeRegisterCommand(hashed);
     return output;
   }
