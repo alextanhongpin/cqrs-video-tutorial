@@ -12,6 +12,7 @@ const createPickupTransport = require("nodemailer-pickup-transport");
 // Components.
 const createIdentityComponent = require("../components/identity");
 const createSendEmailComponent = require("../components/send-email");
+const createVideoPublishingComponent = require("../components/video-publishing");
 
 // Aggregators.
 const createHomePageAggregator = require("../aggregators/home-page");
@@ -30,12 +31,6 @@ async function createConfig({ env }) {
   });
 
   const messageStore = createMessageStore({ db: messageStoreDb });
-  const transport = createPickupTransport({ directory: env.emailDirectory });
-  const sendEmailComponent = createSendEmailComponent({
-    messageStore,
-    systemSenderEmailAddress: env.systemSenderEmailAddress,
-    transport
-  });
 
   // Apps.
   const homeApp = createHomeApp({ db });
@@ -55,9 +50,22 @@ async function createConfig({ env }) {
 
   // Components.
   const identityComponent = createIdentityComponent({ messageStore });
+  const transport = createPickupTransport({ directory: env.emailDirectory });
+  const sendEmailComponent = createSendEmailComponent({
+    messageStore,
+    systemSenderEmailAddress: env.systemSenderEmailAddress,
+    transport
+  });
+  const videoPublishingComponent = createVideoPublishingComponent({
+    messageStore
+  });
 
   const aggregators = [homePageAggregator, userCredentialsAggregator];
-  const components = [identityComponent, sendEmailComponent];
+  const components = [
+    identityComponent,
+    sendEmailComponent,
+    videoPublishingComponent
+  ];
 
   return {
     env,
@@ -77,7 +85,8 @@ async function createConfig({ env }) {
 
     // Components.
     identityComponent,
-    sendEmailComponent
+    sendEmailComponent,
+    videoPublishingComponent
   };
 }
 
